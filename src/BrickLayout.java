@@ -31,12 +31,38 @@ public class BrickLayout {
     public void doOneBrick() {
         if (bricks.size() != 0) {
             Brick b = bricks.remove(0);
-            for (int j = brickLayout.length - 1; j > 0; j--) {
-                if (!checkBrickSpot(j, b.getStart()) && !checkBrickSpot(j, b.getEnd())) {
-                    for (int x = b.getStart(); x < b.getEnd() + 1; x++) {
-                        brickLayout[j][x] = 1;
+            int start = b.getStart();
+            int end = b.getEnd();
+            int rowToPlace = -1;
+
+            for (int r = 0; r < brickLayout.length; r++) {
+                boolean canPlaceHere = true;
+
+                for (int c = start; c <= end; c++) {
+                    if (brickLayout[r][c] == 1) {
+                        canPlaceHere = false;
+                        break;
                     }
+                }
+
+                if (!canPlaceHere) {
                     break;
+                }
+
+                if (r == brickLayout.length - 1) {
+                    rowToPlace = r;
+                } else {
+                    for (int c = start; c <= end; c++) {
+                        if (brickLayout[r + 1][c] == 1) {
+                            rowToPlace = r;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (rowToPlace != -1) {
+                for (int c = start; c <= end; c++) {
+                    brickLayout[rowToPlace][c] = 1;
                 }
             }
         }
@@ -76,5 +102,9 @@ public class BrickLayout {
         else {
             return false;
         }
+    }
+
+    public int[][] getBrickLayout() {
+        return brickLayout;
     }
 }
